@@ -89,20 +89,6 @@ switch (platform) {
           loadError = e
         }
         break
-      case 'arm64':
-        localFileExisted = existsSync(
-          join(__dirname, 'surrealdb.node.win32-arm64-msvc.node')
-        )
-        try {
-          if (localFileExisted) {
-            nativeBinding = require('./surrealdb.node.win32-arm64-msvc.node')
-          } else {
-            nativeBinding = require('surrealdb.node-win32-arm64-msvc')
-          }
-        } catch (e) {
-          loadError = e
-        }
-        break
       default:
         throw new Error(`Unsupported architecture on Windows: ${arch}`)
     }
