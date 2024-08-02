@@ -89,6 +89,20 @@ switch (platform) {
           loadError = e
         }
         break
+      case 'arm64':
+        localFileExisted = existsSync(
+          join(__dirname, 'surrealdb.node.win32-arm64-msvc.node')
+        )
+        try {
+          if (localFileExisted) {
+            nativeBinding = require('./surrealdb.node.win32-arm64-msvc.node')
+          } else {
+            nativeBinding = require('surrealdb.node-win32-arm64-msvc')
+          }
+        } catch (e) {
+          loadError = e
+        }
+        break
       default:
         throw new Error(`Unsupported architecture on Windows: ${arch}`)
     }
@@ -210,14 +224,72 @@ switch (platform) {
         }
         break
       case 'arm':
+        if (isMusl()) {
+          localFileExisted = existsSync(
+            join(__dirname, 'surrealdb.node.linux-arm-musleabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./surrealdb.node.linux-arm-musleabihf.node')
+            } else {
+              nativeBinding = require('surrealdb.node-linux-arm-musleabihf')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        } else {
+          localFileExisted = existsSync(
+            join(__dirname, 'surrealdb.node.linux-arm-gnueabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./surrealdb.node.linux-arm-gnueabihf.node')
+            } else {
+              nativeBinding = require('surrealdb.node-linux-arm-gnueabihf')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        }
+        break
+      case 'riscv64':
+        if (isMusl()) {
+          localFileExisted = existsSync(
+            join(__dirname, 'surrealdb.node.linux-riscv64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./surrealdb.node.linux-riscv64-musl.node')
+            } else {
+              nativeBinding = require('surrealdb.node-linux-riscv64-musl')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        } else {
+          localFileExisted = existsSync(
+            join(__dirname, 'surrealdb.node.linux-riscv64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./surrealdb.node.linux-riscv64-gnu.node')
+            } else {
+              nativeBinding = require('surrealdb.node-linux-riscv64-gnu')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        }
+        break
+      case 's390x':
         localFileExisted = existsSync(
-          join(__dirname, 'surrealdb.node.linux-arm-gnueabihf.node')
+          join(__dirname, 'surrealdb.node.linux-s390x-gnu.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./surrealdb.node.linux-arm-gnueabihf.node')
+            nativeBinding = require('./surrealdb.node.linux-s390x-gnu.node')
           } else {
-            nativeBinding = require('surrealdb.node-linux-arm-gnueabihf')
+            nativeBinding = require('surrealdb.node-linux-s390x-gnu')
           }
         } catch (e) {
           loadError = e
@@ -238,6 +310,6 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Surreal } = nativeBinding
+const { SurrealdbNodeEngine } = nativeBinding
 
-module.exports.Surreal = Surreal
+module.exports.SurrealdbNodeEngine = SurrealdbNodeEngine
